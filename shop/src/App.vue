@@ -11,7 +11,8 @@
 
   <div class="content__catalog">
     <ProductFilter :price-from.sync="filterPriceFrom"
-    :price-to.sync="filterPriceTo" :category-id.sync="filterCategoryId"/>
+    :price-to.sync="filterPriceTo" :category-id.sync="filterCategoryId"
+    :filter-color.sync="filterColor"/>
 
     <section class="catalog">
       <CatalogList :products="products"/>
@@ -36,6 +37,7 @@ export default {
       filterPriceFrom: 0,
       filterPriceTo: 0,
       filterCategoryId: 0,
+      filterColor: '#73B6EA',
       page: 1,
       productsPerPage: 3,
     };
@@ -58,6 +60,9 @@ export default {
         filteredProducts = filteredProducts
           .filter((product) => product.categoryId === this.filterCategoryId);
       }
+
+      filteredProducts = filteredProducts
+        .filter((product) => product.colors.includes(this.filterColor, 0));
 
       return filteredProducts;
     },
