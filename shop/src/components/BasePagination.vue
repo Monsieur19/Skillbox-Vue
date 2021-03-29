@@ -4,7 +4,7 @@
         <a class="pagination__link pagination__link--arrow"
         aria-label="Предыдущая страница"
         :class="{'pagination__link--disabled': page === 1}"
-        @click.prevent="previousPage">
+        @click.prevent="paginate(page - 1)">
           <svg width="8" height="14" fill="currentColor">
             <use xlink:href="#icon-arrow-left"></use>
           </svg>
@@ -21,7 +21,7 @@
         <a class="pagination__link pagination__link--arrow" href="#"
         aria-label="Следующая страница"
         :class="{'pagination__link--disabled': page === pages}"
-        @click.prevent="nextPage">
+        @click.prevent="paginate(page + 1)">
           <svg width="8" height="14" fill="currentColor">
             <use xlink:href="#icon-arrow-right"></use>
           </svg>
@@ -40,16 +40,8 @@ export default {
   },
   methods: {
     paginate(page) {
-      this.$emit('update:page', page);
-    },
-    previousPage() {
-      if (this.page !== 1) {
-        this.$emit('update:page', this.page - 1);
-      }
-    },
-    nextPage() {
-      if (this.page !== this.pages) {
-        this.$emit('update:page', this.page + 1);
+      if (page > 0 && page <= this.pages) {
+        this.$emit('update:page', page);
       }
     },
   },

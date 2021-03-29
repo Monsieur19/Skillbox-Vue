@@ -15,11 +15,12 @@
   </span>
 
   <ul class="colors colors--black">
-    <li class="colors__item" v-for="(color) in product.colors" :key="color">
+    <li class="colors__item" v-for="(color) in product.colors" :key="color.id">
       <label class="colors__label">
-        <input class="colors__radio sr-only" type="radio" :value="color"
-        :checked="checkColor(color)" @click="changeColor(color)">
-        <span class="colors__value" :style="{backgroundColor: color,}">
+        <input class="colors__radio sr-only" type="radio"
+        :value="color.id"
+        v-model="currentColor">
+        <span class="colors__value" :style="{backgroundColor: color.code,}">
         </span>
       </label>
     </li>
@@ -40,7 +41,7 @@ export default {
   },
   data() {
     return {
-      color: '#73B6EA',
+      currentColor: '#73B6EA',
     };
   },
 };

@@ -32,12 +32,13 @@
         <fieldset class="form__block">
           <legend class="form__legend">Цвет</legend>
           <ul class="colors">
-            <li class="colors__item" v-for="color in colors" :key="color">
+            <li class="colors__item" v-for="color in colors" :key="color.id">
               <label class="colors__label">
                 <input class="colors__radio sr-only" type="radio"
-                  name="color" :value="color" :checked="color === filterColor"
-                   @click="changeColor(color)">
-                <span class="colors__value" :style="{backgroundColor: color,}">
+                  :value="color.id"
+                  v-model="currentColor"
+                  >
+                <span class="colors__value" :style="{backgroundColor: color.code,}">
                 </span>
               </label>
             </li>
@@ -118,6 +119,7 @@
 
 <script>
 import categories from '../data/categories';
+import filterColors from '../data/filterColors';
 
 export default {
   props: ['priceFrom', 'priceTo', 'categoryId', 'filterColor'],
@@ -126,8 +128,8 @@ export default {
       currentPriceFrom: 0,
       currentPriceTo: 0,
       currentCategoryId: 0,
-      currentColor: '#73B6EA',
-      colors: ['#73B6EA', '#FFBE15', '#939393', '#8BE000', '#FF6B00', '#FFF', '#222'],
+      currentColor: 0,
+      colors: filterColors,
     };
   },
   computed: {
@@ -157,10 +159,7 @@ export default {
       this.$emit('update:priceFrom', 0);
       this.$emit('update:priceTo', 0);
       this.$emit('update:categoryId', 0);
-      this.$emit('update:filterColor', '#73B6EA');
-    },
-    changeColor(color) {
-      this.currentColor = color;
+      this.$emit('update:filterColor', 0);
     },
   },
 };
