@@ -14,34 +14,20 @@
     {{product.price}}
   </span>
 
-  <ul class="colors colors--black">
-    <li class="colors__item" v-for="(color) in product.colors" :key="color.id">
-      <label class="colors__label">
-        <input class="colors__radio sr-only" type="radio"
-        :value="color.id"
-        v-model="currentColor">
-        <span class="colors__value" :style="{backgroundColor: color.code,}">
-        </span>
-      </label>
-    </li>
-  </ul>
+  <FilterColor :colors="product.colors" :current-color.sync="currentColor" :is-black="true"/>
+
 </li>
 </template>
 
 <script>
+import FilterColor from './FilterColor.vue';
+
 export default {
   props: ['product'],
-  methods: {
-    checkColor(clr) {
-      return this.color === clr;
-    },
-    changeColor(clr) {
-      this.color = clr;
-    },
-  },
+  components: { FilterColor },
   data() {
     return {
-      currentColor: '#73B6EA',
+      currentColor: '1',
     };
   },
 };
