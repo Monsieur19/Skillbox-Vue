@@ -1,3 +1,6 @@
 export default function numberFormat(value) {
-  return Intl.NumberFormat().format(value);
+  if (Number.isInteger(value)) {
+    return Intl.NumberFormat().format(value);
+  }
+  return '';
 }

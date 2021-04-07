@@ -31,8 +31,7 @@
 
         <fieldset class="form__block">
           <legend class="form__legend">Цвет</legend>
-          <FilterColor :colors="colors" :current-color.sync="currentColor"
-          is-black.default="false"/>
+          <FilterColor :colors="colors" :current-color.sync="currentColor"/>
         </fieldset>
 
         <fieldset class="form__block">
