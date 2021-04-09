@@ -1,5 +1,10 @@
 <template>
-<main class="content container">
+<Preloader v-if="productsLoading"/>
+<div v-else-if="!productsData">
+  Ошибка
+  <button @click="loadProducts">Попробовать еще раз</button>
+</div>
+<main class="content container" v-else>
   <div class="content__top">
     <ul class="breadcrumbs">
       <li class="breadcrumbs__item">
@@ -23,7 +28,7 @@
   <section class="item">
     <div class="item__pics pics">
       <div class="pics__wrapper">
-        <img width="570" height="570" :src="product.img"
+        <img width="570" height="570" :src="product.image.file.url"
         :alt="product.title">
       </div>
     </div>
@@ -41,7 +46,7 @@
 
           <fieldset class="form__block">
             <legend class="form__legend">Цвет:</legend>
-            <FilterColor :colors="product.colors" :current-color.sync="currentColor"
+            <FilterColor :colors="product.colors" :current-color.sync="product.colors[0].id"
             is-black.default="false"/>
           </fieldset>
 
@@ -79,10 +84,12 @@
 
           <div class="item__row">
             <FormCounter :amount.sync="productAmount"/>
-            <button class="button button--primery" type="submit">
+            <button class="button button--primery" type="submit" :disabled="productAddSending">
               В корзину
             </button>
           </div>
+          <div v-show="productAdded">Товар добавлен</div>
+          <div v-show="productAddSending">Добавляем товар</div>
         </form>
       </div>
     </div>
@@ -156,11 +163,11 @@
 </template>
 
 <script>
-import products from '@/data/products';
-import categories from '@/data/categories';
 import numberFormat from '@/helpers/numberFormat';
 import FilterColor from '@/components/FilterColor.vue';
 import FormCounter from '@/components/FormCounter.vue';
+import axios from 'axios';
+import { mapActions } from 'vuex';
 
 export default {
   components: { FilterColor, FormCounter },
@@ -168,6 +175,12 @@ export default {
     return {
       currentColor: '1',
       productAmount: 1,
+      productsData: null,
+      productsLoading: false,
+      productsLoadingFailed: false,
+
+      productAdded: false,
+      productAddSending: false,
     };
   },
   filters: {
@@ -175,18 +188,41 @@ export default {
   },
   computed: {
     product() {
-      return products.find((product) => product.id === +this.$route.params.id);
+      return this.productsData;
     },
     category() {
-      return categories.find((category) => category.id === this.product.categoryId);
+      return this.productsData.category;
     },
   },
   methods: {
+    ...mapActions(['addProductToCart']),
     addToCart() {
-      this.$store.commit(
-        'addProductToCart',
-        { productId: this.product.id, amount: this.productAmount },
-      );
+      this.productAdded = false;
+      this.productAddSending = true;
+      this.addProductToCart({ productId: this.product.id, amount: this.productAmount })
+        .then(() => {
+          this.productAdded = true;
+          this.productAddSending = false;
+        });
+    },
+    loadProduct() {
+      this.productsLoading = true;
+      this.productsLoadingFailed = false;
+      axios.get(`https://vue-study.skillbox.cc/api/products/${this.$route.params.id}`)
+        .then((response) => { this.productsData = response.data; })
+        .catch(() => { this.productsLoadingFailed = true; })
+        .then(() => { this.productsLoading = false; });
+    },
+  },
+  watch: {
+    '$route.params.id': {
+      handler() {
+        if (this.product) {
+          this.$router.replace({ name: 'notFound' });
+        }
+        this.loadProduct();
+      },
+      immediate: true,
     },
   },
 };

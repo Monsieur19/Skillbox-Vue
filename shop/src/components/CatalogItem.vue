@@ -21,7 +21,6 @@
 </template>
 
 <script>
-import gotoPage from '@/helpers/gotoPage';
 import numberFormat from '@/helpers/numberFormat';
 import FilterColor from './FilterColor.vue';
 
@@ -33,11 +32,8 @@ export default {
   components: { FilterColor },
   data() {
     return {
-      currentColor: '1',
+      currentColor: this.product.colors[0].id,
     };
-  },
-  methods: {
-    gotoPage,
   },
 };
 </script>
