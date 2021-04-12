@@ -23,7 +23,7 @@
             <select class="form__select" type="text" name="category"
             v-model.number="currentCategoryId">
               <option value="0">Все категории</option>
-              <option :value="category.id" v-for="category in categories.items"
+              <option :value="category.id" v-for="category in categories"
                 :key="category.id">{{category.title}}</option>
             </select>
           </label>
@@ -31,7 +31,7 @@
 
         <fieldset class="form__block">
           <legend class="form__legend">Цвет</legend>
-          <FilterColor :colors="colors.items" :current-color.sync="currentColor"/>
+          <FilterColor :colors="colors" :current-color.sync="currentColor"/>
         </fieldset>
 
         <fieldset class="form__block">
@@ -119,13 +119,9 @@ export default {
       currentPriceTo: 0,
       currentCategoryId: 0,
       currentColor: 1,
-      colors: null,
+      colors: [],
+      categories: [],
     };
-  },
-  computed: {
-    categories() {
-      return this.categoriesData ? this.categoriesData : [];
-    },
   },
   watch: {
     priceFrom(value) {
@@ -156,11 +152,11 @@ export default {
     },
     loadCategories() {
       axios.get('https://vue-study.skillbox.cc/api/productCategories')
-        .then((response) => { this.categoriesData = response.data; });
+        .then((response) => { this.categories = response.data.items; });
     },
     loadColors() {
       axios.get('https://vue-study.skillbox.cc/api/colors')
-        .then((response) => { this.colors = response.data; });
+        .then((response) => { this.colors = response.data.items; });
     },
   },
   created() {

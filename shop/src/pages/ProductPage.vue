@@ -166,11 +166,12 @@
 import numberFormat from '@/helpers/numberFormat';
 import FilterColor from '@/components/FilterColor.vue';
 import FormCounter from '@/components/FormCounter.vue';
+import Preloader from '@/components/Preloader.vue';
 import axios from 'axios';
 import { mapActions } from 'vuex';
 
 export default {
-  components: { FilterColor, FormCounter },
+  components: { FilterColor, FormCounter, Preloader },
   data() {
     return {
       currentColor: '1',
@@ -208,18 +209,21 @@ export default {
     loadProduct() {
       this.productsLoading = true;
       this.productsLoadingFailed = false;
-      axios.get(`https://vue-study.skillbox.cc/api/products/${this.$route.params.id}`)
-        .then((response) => { this.productsData = response.data; })
-        .catch(() => { this.productsLoadingFailed = true; })
-        .then(() => { this.productsLoading = false; });
+      clearTimeout(this.loadProductsTimer);
+      this.loadProductsTimer = setTimeout(() => {
+        axios.get(`https://vue-study.skillbox.cc/api/products/${this.$route.params.id}`)
+          .then((response) => { this.productsData = response.data; })
+          .catch(() => {
+            this.productsLoadingFailed = true;
+            this.$router.replace({ name: 'notFound' });
+          })
+          .then(() => { this.productsLoading = false; });
+      }, 2000);
     },
   },
   watch: {
     '$route.params.id': {
       handler() {
-        if (this.product) {
-          this.$router.replace({ name: 'notFound' });
-        }
         this.loadProduct();
       },
       immediate: true,

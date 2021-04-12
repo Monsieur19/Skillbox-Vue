@@ -19,7 +19,7 @@
 
   <button class="product__del button-del" type="button"
   aria-label="Удалить товар из корзины"
-  @click.prevent="deleteCartProduct(item.productId)">
+  @click.prevent="deleteCartProduct(item.productId, amount)">
     <svg width="20" height="20" fill="currentColor">
       <use xlink:href="#icon-close"></use>
     </svg>
@@ -46,8 +46,8 @@ export default {
     },
   },
   methods: {
-    deleteCartProduct(id) {
-      this.$store.dispatch('deleteCartProduct', { productId: id });
+    deleteCartProduct(id, amount) {
+      this.$store.dispatch('deleteCartProduct', { productId: id, amount });
     },
   },
 };

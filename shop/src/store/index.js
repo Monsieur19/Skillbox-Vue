@@ -100,11 +100,14 @@ export default new Vuex.Store({
           context.commit('syncCartProducts');
         });
     },
-    deleteCartProduct(context, { productId }) {
+    deleteCartProduct(context, { productId, amount }) {
+      this.state.cartProducts = this.state.cartProducts
+        .filter((item) => item.productId !== productId);
       return axios
         .delete('https://vue-study.skillbox.cc/api/baskets/products', {
-          productId,
-        }, {
+          data: {
+            productId,
+          },
           params: {
             userAccessKey: context.state.userAccessKey,
           },
@@ -112,6 +115,10 @@ export default new Vuex.Store({
         .then((response) => {
           context.commit('updateCartProductsData', response.data.items);
           context.commit('syncCartProducts');
+        })
+        .catch(() => {
+          this.state.cartProducts.push({ productId, amount });
+          alert('Не удалось удалить товар');
         });
     },
   },
