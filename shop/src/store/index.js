@@ -100,7 +100,7 @@ export default new Vuex.Store({
           context.commit('syncCartProducts');
         });
     },
-    deleteCartProduct(context, { productId, amount }) {
+    deleteCartProduct(context, { productId }) {
       this.state.cartProducts = this.state.cartProducts
         .filter((item) => item.productId !== productId);
       return axios
@@ -117,7 +117,7 @@ export default new Vuex.Store({
           context.commit('syncCartProducts');
         })
         .catch(() => {
-          this.state.cartProducts.push({ productId, amount });
+          context.commit('syncCartProducts');
           alert('Не удалось удалить товар');
         });
     },
