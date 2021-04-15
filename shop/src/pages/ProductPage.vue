@@ -218,7 +218,7 @@ export default {
             this.$router.replace({ name: 'notFound' });
           })
           .then(() => { this.productsLoading = false; });
-      }, 2000);
+      }, 500);
     },
   },
   watch: {

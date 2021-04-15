@@ -9,8 +9,16 @@ export default new Vuex.Store({
     cartProducts: [],
     userAccessKey: null,
     cartProductsData: [],
+    orderInfo: null,
   },
   mutations: {
+    updateOrderInfo(state, orderInfo) {
+      state.orderInfo = orderInfo;
+    },
+    resetCart() {
+      this.state.cartProducts = [];
+      this.state.cartProductsData = [];
+    },
     updateCartProductAmount(state, { productId, amount }) {
       const item = state.cartProducts.find((itemState) => itemState.productId === productId);
 
@@ -51,6 +59,17 @@ export default new Vuex.Store({
     },
   },
   actions: {
+    loadOrderInfo(context, orderId) {
+      return axios
+        .get(`https://vue-study.skillbox.cc/api/order/${orderId}`, {
+          params: {
+            userAccessKey: context.state.userAccessKey,
+          },
+        })
+        .then((response) => {
+          context.commit('updateOrderIndo', response.data);
+        });
+    },
     loadCart(context) {
       return axios
         .get('https://vue-study.skillbox.cc/api/baskets', {
