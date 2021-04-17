@@ -61,13 +61,13 @@ export default new Vuex.Store({
   actions: {
     loadOrderInfo(context, orderId) {
       return axios
-        .get(`https://vue-study.skillbox.cc/api/order/${orderId}`, {
+        .get(`https://vue-study.skillbox.cc/api/orders/${orderId}`, {
           params: {
             userAccessKey: context.state.userAccessKey,
           },
         })
         .then((response) => {
-          context.commit('updateOrderIndo', response.data);
+          context.commit('updateOrderInfo', response.data);
         });
     },
     loadCart(context) {

@@ -24,7 +24,7 @@
     </h1>
   </div>
 
-  <section class="cart">
+  <section class="cart" v-if="orderInfo">
     <form class="cart__form form" action="#" method="POST">
       <div class="cart__field">
         <p class="cart__message">
@@ -78,7 +78,7 @@
         </ul>
       </div>
 
-      <div class="cart__block">
+      <div class="cart__block" v-if="orderInfo">
         <ul class="cart__orders">
           <OrderItem v-for="item in orderList" :key="item.product.id" :item="item"/>
         </ul>
@@ -98,17 +98,30 @@ import OrderItem from '@/components/OrderItem.vue';
 
 export default {
   components: { OrderItem },
-  data() {
-    return {
-      orderInfo: this.$store.state.orderInfo,
-      orderList: this.$store.state.orderInfo.basket.items,
-    };
+  computed: {
+    orderInfo() {
+      return this.$store.state.orderInfo;
+    },
+    orderList() {
+      return this.orderInfo.basket.items;
+    },
   },
   created() {
     if (this.$store.state.orderInfo && this.$store.state.orderInfo.id === this.$route.params.id) {
       return;
     }
     this.$store.dispatch('loadOrderInfo', this.$route.params.id);
+  },
+  watch: {
+    '$route.params.id': {
+      handler() {
+        this.$store.dispatch('loadOrderInfo', this.$route.params.id)
+          .catch(() => {
+            this.$router.replace({ name: 'notFound' });
+          });
+      },
+      immediate: true,
+    },
   },
 };
 </script>
